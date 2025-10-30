@@ -18,7 +18,7 @@ export async function findByOwner(ownerId: number, query: any) {
     where: { ownerId },
     orderBy: { createdAt: 'desc' },
     take,
-    skip
+    skip,
   });
 }
 
