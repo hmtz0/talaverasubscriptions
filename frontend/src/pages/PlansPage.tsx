@@ -51,7 +51,7 @@ export default function PlansPage() {
           </p>
         ) : (
           <p className="text-lg text-gray-600">
-            {t('subscription.current')}: <span className="font-semibold">{t('plan.free.name')}</span>
+            {t('subscription.current')}: <span className="font-semibold">{t('plans.freePlan')}</span>
           </p>
         )}
       </div>

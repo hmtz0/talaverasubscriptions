@@ -19,7 +19,9 @@ const resources = {
       // Plans
       'plans.title': 'Choose Your Plan',
       'plans.free': 'Free',
+      'plans.freePlan': 'Free Plan',
       'plans.pro': 'Pro',
+      'plans.proPlan': 'Pro Plan',
       'plans.perMonth': '/month',
       'plans.selectPlan': 'Select Plan',
       'plans.currentPlan': 'Current Plan',
@@ -69,7 +71,9 @@ const resources = {
       // Plans
       'plans.title': 'Elige Tu Plan',
       'plans.free': 'Gratuito',
+      'plans.freePlan': 'Plan Gratuito',
       'plans.pro': 'Pro',
+      'plans.proPlan': 'Plan Pro',
       'plans.perMonth': '/mes',
       'plans.selectPlan': 'Seleccionar Plan',
       'plans.currentPlan': 'Plan Actual',
