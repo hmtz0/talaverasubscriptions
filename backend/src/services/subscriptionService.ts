@@ -123,3 +123,22 @@ export async function cancelSubscription(userId: number, subscriptionId: number)
     },
   });
 }
+
+export async function cancelCurrentSubscription(userId: number) {
+  const subscription = await prisma.subscription.findFirst({
+    where: {
+      userId,
+      status: 'active',
+    },
+  });
+  if (!subscription) {
+    throw new SubscriptionNotFoundError('No active subscription found');
+  }
+  return await prisma.subscription.update({
+    where: { id: subscription.id },
+    data: {
+      status: 'cancelled',
+      endDate: new Date(),
+    },
+  });
+}

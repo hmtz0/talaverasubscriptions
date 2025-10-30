@@ -6,5 +6,6 @@ const router = Router();
 
 router.post('/', requireAuth, subscriptionController.createSubscription);
 router.get('/current', requireAuth, subscriptionController.getCurrentSubscription);
+router.delete('/current', requireAuth, subscriptionController.cancelCurrentSubscription);
 
 export default router;

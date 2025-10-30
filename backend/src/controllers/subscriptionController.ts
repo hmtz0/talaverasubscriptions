@@ -68,3 +68,18 @@ export async function getCurrentSubscription(req: Request, res: Response, next: 
     next(error);
   }
 }
+
+export async function cancelCurrentSubscription(req: Request, res: Response, next: NextFunction) {
+  try {
+    const lang = getLanguageFromRequest(req);
+    const userId = req.user!.id;
+    await subscriptionService.cancelCurrentSubscription(userId);
+    res.status(204).send();
+  } catch (error) {
+    const lang = getLanguageFromRequest(req);
+    if (error instanceof subscriptionService.SubscriptionNotFoundError) {
+      return res.status(404).json({ error: t('subscription.notFound', lang) });
+    }
+    next(error);
+  }
+}
