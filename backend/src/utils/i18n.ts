@@ -13,6 +13,24 @@ export const translations = {
     'project.quotaExceeded': 'Free plan limit reached. Maximum {{limit}} projects allowed.',
     'project.invalidId': 'Invalid project ID',
 
+    // Plan messages
+    'plan.free.name': 'Free Plan',
+    'plan.free.description': 'Perfect for getting started',
+    'plan.free.feature1': 'Up to 3 projects',
+    'plan.free.feature2': 'Basic support',
+    'plan.free.feature3': 'Community access',
+    'plan.pro.name': 'Pro Plan',
+    'plan.pro.description': 'For professional developers',
+    'plan.pro.feature1': 'Up to 10 projects',
+    'plan.pro.feature2': 'Priority support',
+    'plan.pro.feature3': 'Advanced features',
+
+    // Subscription messages
+    'subscription.notFound': 'No active subscription found',
+    'subscription.alreadyActive': 'User already has an active subscription',
+    'subscription.invalidPlan': 'Invalid plan selected',
+    'subscription.created': 'Subscription created successfully',
+
     // General messages
     'general.success': 'Success',
     'general.created': 'Created successfully',
@@ -33,6 +51,24 @@ export const translations = {
     'project.quotaExceeded':
       'Límite del plan gratuito alcanzado. Máximo {{limit}} proyectos permitidos.',
     'project.invalidId': 'ID de proyecto inválido',
+
+    // Plan messages
+    'plan.free.name': 'Plan Gratuito',
+    'plan.free.description': 'Perfecto para empezar',
+    'plan.free.feature1': 'Hasta 3 proyectos',
+    'plan.free.feature2': 'Soporte básico',
+    'plan.free.feature3': 'Acceso a la comunidad',
+    'plan.pro.name': 'Plan Pro',
+    'plan.pro.description': 'Para desarrolladores profesionales',
+    'plan.pro.feature1': 'Hasta 10 proyectos',
+    'plan.pro.feature2': 'Soporte prioritario',
+    'plan.pro.feature3': 'Funciones avanzadas',
+
+    // Subscription messages
+    'subscription.notFound': 'No se encontró suscripción activa',
+    'subscription.alreadyActive': 'El usuario ya tiene una suscripción activa',
+    'subscription.invalidPlan': 'Plan inválido seleccionado',
+    'subscription.created': 'Suscripción creada exitosamente',
 
     // General messages
     'general.success': 'Éxito',
