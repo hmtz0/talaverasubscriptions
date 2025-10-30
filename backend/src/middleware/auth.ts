@@ -38,9 +38,14 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
       return res.status(401).json({ error: 'Invalid token subject' });
     }
 
+    // Set both userId (legacy) and user object (new standard)
     (req as any).userId = userId;
+    req.user = { id: userId };
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({ error: 'Invalid token' });
   }
 }
+
+// Alias for consistency
+export const authenticate = requireAuth;
