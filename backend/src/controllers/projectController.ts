@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as projectService from '../services/projectService';
+import { t, getLanguageFromRequest } from '../utils/i18n';
 
 export async function listProjects(req: Request, res: Response, next: NextFunction) {
   try {
@@ -13,14 +14,18 @@ export async function listProjects(req: Request, res: Response, next: NextFuncti
 
 export async function createProject(req: Request, res: Response, next: NextFunction) {
   try {
+    const lang = getLanguageFromRequest(req);
     const userId = req.user!.id;
     const { name, description } = req.body;
 
     const project = await projectService.createProject(userId, { name, description });
     res.status(201).json(project);
   } catch (error) {
+    const lang = getLanguageFromRequest(req);
     if (error instanceof projectService.QuotaExceededError) {
-      return res.status(403).json({ error: error.message });
+      return res.status(403).json({
+        error: t('project.quotaExceeded', lang, { limit: '3' }),
+      });
     }
     next(error);
   }
@@ -28,23 +33,25 @@ export async function createProject(req: Request, res: Response, next: NextFunct
 
 export async function deleteProject(req: Request, res: Response, next: NextFunction) {
   try {
+    const lang = getLanguageFromRequest(req);
     const userId = req.user!.id;
     const projectId = parseInt(req.params.id, 10);
 
     if (isNaN(projectId)) {
-      return res.status(400).json({ error: 'Invalid project ID' });
+      return res.status(400).json({ error: t('project.invalidId', lang) });
     }
 
     const result = await projectService.deleteProject(userId, projectId);
 
     if (result === null) {
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: t('project.notFound', lang) });
     }
 
     res.status(204).send();
   } catch (error) {
+    const lang = getLanguageFromRequest(req);
     if (error instanceof Error && error.message.startsWith('Forbidden')) {
-      return res.status(403).json({ error: error.message });
+      return res.status(403).json({ error: t('project.forbidden', lang) });
     }
     next(error);
   }

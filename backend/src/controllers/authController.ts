@@ -2,14 +2,16 @@ import { Request, Response } from 'express';
 import prisma from '../prisma/client';
 import { hashPassword, comparePassword } from '../utils/hash';
 import jwt from 'jsonwebtoken';
+import { t, getLanguageFromRequest } from '../utils/i18n';
 
 const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? '8h';
 
 export async function register(req: Request, res: Response) {
+  const lang = getLanguageFromRequest(req);
   const { email, password, name } = req.body;
   const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) return res.status(409).json({ error: 'Email already in use' });
+  if (existing) return res.status(409).json({ error: t('auth.emailInUse', lang) });
   const hashed = await hashPassword(password);
   const user = await prisma.user.create({ data: { email, password: hashed, name } });
 
@@ -31,11 +33,12 @@ export async function register(req: Request, res: Response) {
 export const signup = register;
 
 export async function login(req: Request, res: Response) {
+  const lang = getLanguageFromRequest(req);
   const { email, password } = req.body;
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+  if (!user) return res.status(401).json({ error: t('auth.invalidCredentials', lang) });
   const ok = await comparePassword(password, user.password);
-  if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
+  if (!ok) return res.status(401).json({ error: t('auth.invalidCredentials', lang) });
   const token = jwt.sign({ sub: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
   res.json({
     accessToken: token,
