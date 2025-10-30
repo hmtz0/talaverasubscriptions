@@ -23,8 +23,11 @@ export async function createProject(req: Request, res: Response, next: NextFunct
   } catch (error) {
     const lang = getLanguageFromRequest(req);
     if (error instanceof projectService.QuotaExceededError) {
+      // Extraer el límite dinámico del mensaje de error
+      const match = /Maximum (\d+) projects/.exec(error.message);
+      const limit = match ? match[1] : '3';
       return res.status(403).json({
-        error: t('project.quotaExceeded', lang, { limit: '3' }),
+        error: t('project.quotaExceeded', lang, { limit }),
       });
     }
     next(error);

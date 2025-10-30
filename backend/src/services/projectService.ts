@@ -1,4 +1,5 @@
 import prisma from '../prisma/client';
+import { getCurrentSubscription } from './subscriptionService';
 
 const FREE_PLAN_PROJECT_LIMIT = 3;
 
@@ -24,14 +25,25 @@ export async function listUserProjects(userId: number) {
 }
 
 export async function createProject(userId: number, data: { name: string; description?: string }) {
-  // Check quota (Free plan: max 3 projects)
+  // Obtener la suscripción activa del usuario
+  let projectsQuota = 3; // Default Free
+  try {
+    const subscription = await getCurrentSubscription(userId);
+    if (subscription && subscription.plan && typeof subscription.plan.projectsQuota === 'number') {
+      projectsQuota = subscription.plan.projectsQuota;
+    }
+  } catch (e) {
+    // Si no hay suscripción activa, usar default (Free)
+    projectsQuota = 3;
+  }
+
   const projectCount = await prisma.project.count({
     where: { ownerId: userId },
   });
 
-  if (projectCount >= FREE_PLAN_PROJECT_LIMIT) {
+  if (projectCount >= projectsQuota) {
     throw new QuotaExceededError(
-      `Free plan limit reached. Maximum ${FREE_PLAN_PROJECT_LIMIT} projects allowed.`
+      `Plan limit reached. Maximum ${projectsQuota} projects allowed.`
     );
   }
 
