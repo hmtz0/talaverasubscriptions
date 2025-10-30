@@ -20,7 +20,38 @@ export function useCreateProject() {
       const response = await apiClient.post<Project>('/projects', data);
       return response.data;
     },
-    onSuccess: () => {
+    // Optimistic update
+    onMutate: async (newProject) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['projects'] });
+
+      // Snapshot the previous value
+      const previousProjects = queryClient.getQueryData<Project[]>(['projects']);
+
+      // Optimistically update to the new value
+      if (previousProjects) {
+        const optimisticProject: Project = {
+          id: Date.now(), // Temporary ID
+          name: newProject.name,
+          description: newProject.description || null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        
+        queryClient.setQueryData<Project[]>(['projects'], [...previousProjects, optimisticProject]);
+      }
+
+      // Return context with the snapshot
+      return { previousProjects };
+    },
+    // If the mutation fails, roll back to the previous value
+    onError: (_err, _newProject, context) => {
+      if (context?.previousProjects) {
+        queryClient.setQueryData(['projects'], context.previousProjects);
+      }
+    },
+    // Always refetch after error or success
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
     },
   });
@@ -33,7 +64,33 @@ export function useDeleteProject() {
     mutationFn: async (projectId: number) => {
       await apiClient.delete(`/projects/${projectId}`);
     },
-    onSuccess: () => {
+    // Optimistic update
+    onMutate: async (projectId) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['projects'] });
+
+      // Snapshot the previous value
+      const previousProjects = queryClient.getQueryData<Project[]>(['projects']);
+
+      // Optimistically update by removing the project
+      if (previousProjects) {
+        queryClient.setQueryData<Project[]>(
+          ['projects'],
+          previousProjects.filter((p) => p.id !== projectId)
+        );
+      }
+
+      // Return context with the snapshot
+      return { previousProjects };
+    },
+    // If the mutation fails, roll back to the previous value
+    onError: (_err, _projectId, context) => {
+      if (context?.previousProjects) {
+        queryClient.setQueryData(['projects'], context.previousProjects);
+      }
+    },
+    // Always refetch after error or success
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
     },
   });

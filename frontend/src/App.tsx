@@ -3,9 +3,10 @@ import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import ProjectsPage from './pages/ProjectsPage';
+import PlansPage from './pages/PlansPage';
 import { useAuth } from './contexts/AuthContext';
 
-// Placeholder pages
 function HomePage() {
   const { isAuthenticated } = useAuth();
   
@@ -19,14 +20,6 @@ function HomePage() {
       <p className="text-lg text-gray-600">Manage your projects with subscription-based quotas</p>
     </div>
   );
-}
-
-function ProjectsPage() {
-  return <div>Projects Page - Coming soon</div>;
-}
-
-function PlansPage() {
-  return <div>Plans Page - Coming soon</div>;
 }
 
 function App() {
