@@ -38,20 +38,25 @@ export default function PlansPage() {
     );
   }
 
-  const currentPlanId = currentSubscription?.planId;
+  // If no active subscription, user is on Free plan (plan id 1)
+  const currentPlanId = currentSubscription?.planId || 1;
 
   return (
     <div className="max-w-5xl mx-auto">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('plans.title')}</h1>
-        {currentSubscription && (
+        {currentSubscription && currentSubscription.status === 'active' ? (
           <p className="text-lg text-gray-600">
             {t('subscription.current')}: <span className="font-semibold">{currentSubscription.plan.displayName}</span>
+          </p>
+        ) : (
+          <p className="text-lg text-gray-600">
+            {t('subscription.current')}: <span className="font-semibold">{t('plan.free.name')}</span>
           </p>
         )}
       </div>
 
-      {/* Current Subscription Info */}
+      {/* Current Subscription Info - Only show if active subscription exists */}
       {currentSubscription && currentSubscription.status === 'active' && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
           <div className="flex justify-between items-center">

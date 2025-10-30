@@ -20,6 +20,8 @@ export function useCurrentSubscription() {
       return response.data;
     },
     retry: false,
+    // Don't throw error if no subscription found - user defaults to Free plan
+    throwOnError: false,
   });
 }
 
