@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: talavera
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_DB: talaverasubscriptions
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    image: node:20
+    working_dir: /workspace/backend
+    volumes:
+      - ./:/workspace:delegated
+    env_file:
+      - ./backend/.env
+      - ./.env
+    depends_on:
+      - db
+    command: sh -lc "cd /workspace/backend && npm ci && npm run dev"
+    ports:
+      - "4000:4000"
+
+  frontend:
+    image: node:20
+    working_dir: /workspace/frontend
+    volumes:
+      - ./:/workspace:delegated
+    env_file:
+      - ./frontend/.env
+      - ./.env
+    depends_on:
+      - backend
+    command: sh -lc "cd /workspace/frontend && npm ci && npm run dev -- --host"
+    ports:
+      - "5173:5173"
+
+volumes:
+  db-data:
