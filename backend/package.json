@@ -1,14 +1,21 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "talaverasubscriptions-backend",
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start:prod": "node dist/index.js",
+    "prisma:generate": "prisma generate --schema=../database/schema.prisma",
+    "prisma:migrate:dev": "prisma migrate dev --schema=../database/schema.prisma --name init",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "cucumber": "cucumber-js --require-module ts-node/register --require tests/features/step_definitions/**/*.ts tests/features/**/*.feature",
+    "lint": "eslint . --ext .ts"
+  },
   "dependencies": {
     "@prisma/client": "^6.18.0",
     "bcrypt": "^6.0.0",
@@ -20,6 +27,8 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "^12.2.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.9.2",
@@ -29,7 +38,7 @@
     "prisma": "^6.18.0",
     "supertest": "^7.1.4",
     "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "vitest": "^4.0.5"
   }
