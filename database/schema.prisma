@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  name      String?
-  tasks     Task[]
-  projects  Project[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  name          String?
+  tasks         Task[]
+  projects      Project[]
+  subscriptions Subscription[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Task {
@@ -41,4 +42,47 @@ model Project {
   updatedAt   DateTime @updatedAt
 
   @@index([ownerId, createdAt])
+}
+
+model Plan {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique // "free" or "pro"
+  displayName   String // "Free Plan" or "Pro Plan"
+  priceMonthly  Int // Price in cents (0 for free, e.g., 999 for $9.99)
+  projectsQuota Int // Max number of projects allowed
+  subscriptions Subscription[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Subscription {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId    Int
+  plan      Plan     @relation(fields: [planId], references: [id])
+  status    String   @default("active") // "active", "cancelled", "expired"
+  startDate DateTime @default(now())
+  endDate   DateTime? // Null for active subscriptions
+  invoices  Invoice[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([planId])
+}
+
+model Invoice {
+  id               Int          @id @default(autoincrement())
+  subscriptionId   Int
+  subscription     Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  amount           Int // Amount in cents
+  currency         String       @default("usd")
+  status           String       @default("paid") // "paid", "pending", "failed"
+  paymentIntentId  String? // Mocked Stripe payment intent ID
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([subscriptionId])
+  @@index([paymentIntentId])
 }
