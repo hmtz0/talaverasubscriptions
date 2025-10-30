@@ -42,9 +42,7 @@ export async function createProject(userId: number, data: { name: string; descri
   });
 
   if (projectCount >= projectsQuota) {
-    throw new QuotaExceededError(
-      `Plan limit reached. Maximum ${projectsQuota} projects allowed.`
-    );
+    throw new QuotaExceededError(`Plan limit reached. Maximum ${projectsQuota} projects allowed.`);
   }
 
   return await prisma.project.create({
