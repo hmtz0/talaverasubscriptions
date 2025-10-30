@@ -16,12 +16,18 @@ export function useCurrentSubscription() {
   return useQuery({
     queryKey: ['subscription', 'current'],
     queryFn: async () => {
-      const response = await apiClient.get<Subscription>('/subscriptions/current');
-      return response.data;
+      try {
+        const response = await apiClient.get<Subscription>('/subscriptions/current');
+        return response.data;
+      } catch (error: any) {
+        // If no subscription found (404), return null - user is on Free plan
+        if (error?.response?.status === 404) {
+          return null;
+        }
+        throw error;
+      }
     },
     retry: false,
-    // Don't throw error if no subscription found - user defaults to Free plan
-    throwOnError: false,
   });
 }
 
@@ -48,6 +54,8 @@ export function useCancelSubscription() {
       await apiClient.delete('/subscriptions/current');
     },
     onSuccess: () => {
+      // Clear the subscription cache completely and set to undefined
+      queryClient.setQueryData(['subscription', 'current'], undefined);
       queryClient.invalidateQueries({ queryKey: ['subscription'] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
     },
