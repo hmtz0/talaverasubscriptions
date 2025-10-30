@@ -10,8 +10,11 @@ export const translations = {
     // Project messages
     'project.notFound': 'Project not found',
     'project.forbidden': 'Forbidden: You do not own this project',
-    'project.quotaExceeded': 'Free plan limit reached. Maximum {{limit}} projects allowed.',
+    'project.quotaExceeded': 'Plan limit reached. Maximum {{limit}} projects allowed.',
     'project.invalidId': 'Invalid project ID',
+
+    // Error messages
+    'errors.quota_exceeded': 'Plan limit reached. Maximum {{limit}} projects allowed.',
 
     // Plan messages
     'plan.free.name': 'Free Plan',
@@ -49,8 +52,11 @@ export const translations = {
     'project.notFound': 'Proyecto no encontrado',
     'project.forbidden': 'Prohibido: No eres el propietario de este proyecto',
     'project.quotaExceeded':
-      'Límite del plan gratuito alcanzado. Máximo {{limit}} proyectos permitidos.',
+      'Límite del plan alcanzado. Máximo {{limit}} proyectos permitidos.',
     'project.invalidId': 'ID de proyecto inválido',
+
+    // Error messages
+    'errors.quota_exceeded': 'Límite del plan alcanzado. Máximo {{limit}} proyectos permitidos.',
 
     // Plan messages
     'plan.free.name': 'Plan Gratuito',

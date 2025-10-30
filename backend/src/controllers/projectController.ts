@@ -27,7 +27,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
       const match = /Maximum (\d+) projects/.exec(error.message);
       const limit = match ? match[1] : '3';
       return res.status(403).json({
-        error: t('project.quotaExceeded', lang, { limit }),
+        error: t('errors.quota_exceeded', lang, { limit }),
       });
     }
     next(error);
