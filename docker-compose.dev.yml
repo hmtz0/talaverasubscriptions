@@ -21,9 +21,10 @@ services:
       - ./.env
     depends_on:
       - db
-    command: sh -lc "cd /workspace/backend && npm ci && npm run dev"
+    command: sh -lc "cd /workspace/backend && npm ci && npx prisma generate --schema=../database/schema.prisma && npx prisma migrate deploy --schema=../database/schema.prisma && npm run dev"
     ports:
       - "4000:4000"
+      - "5555:5555"
 
   frontend:
     image: node:20

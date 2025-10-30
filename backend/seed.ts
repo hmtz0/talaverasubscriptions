@@ -1,10 +1,14 @@
 import { config } from 'dotenv';
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 import { PrismaClient } from '@prisma/client';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load environment variables
 config({ path: resolve(__dirname, '.env') });
-config({ path: resolve(__dirname, '../backend/.env') });
+config({ path: resolve(__dirname, '../.env') });
 
 const prisma = new PrismaClient();
 

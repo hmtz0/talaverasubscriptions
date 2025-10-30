@@ -13,18 +13,42 @@ export async function register(req: Request, res: Response) {
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return res.status(409).json({ error: t('auth.emailInUse', lang) });
   const hashed = await hashPassword(password);
-  const user = await prisma.user.create({ data: { email, password: hashed, name } });
+  
+  // Create user and assign free plan in a transaction
+  const result = await prisma.$transaction(async (tx) => {
+    // Create the user
+    const user = await tx.user.create({ data: { email, password: hashed, name } });
+    
+    // Get the free plan
+    const freePlan = await tx.plan.findUnique({ where: { name: 'free' } });
+    if (!freePlan) {
+      throw new Error('Free plan not found. Please run seed script.');
+    }
+    
+    // Create subscription with free plan
+    await tx.subscription.create({
+      data: {
+        userId: user.id,
+        planId: freePlan.id,
+        status: 'active',
+        startDate: new Date(),
+        endDate: null, // Free plan doesn't expire
+      },
+    });
+    
+    return user;
+  });
 
   // Generate JWT token for immediate login after signup
-  const token = jwt.sign({ sub: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  const token = jwt.sign({ sub: result.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
   res.status(201).json({
     accessToken: token,
     expiresIn: JWT_EXPIRES_IN,
     user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
+      id: result.id,
+      email: result.email,
+      name: result.name,
     },
   });
 }
